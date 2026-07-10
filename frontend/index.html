@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>CraveAI - AI Restaurant Recommendations</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#b7122a",
+                        "primary-container": "#db313f",
+                        "on-primary": "#ffffff",
+                        secondary: "#9d3f49",
+                        "surface": "#f8f9fa",
+                        "surface-dim": "#d9dadb",
+                        "surface-bright": "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-container": "#edeeef",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-surface": "#191c1d",
+                        "on-surface-variant": "#5b403f",
+                        outline: "#8f6f6e",
+                        background: "#f8f9fa"
+                    },
+                    fontFamily: {
+                        sans: ["Outfit", "sans-serif"],
+                        display: ["Outfit", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 30px rgba(183, 18, 42, 0.05);
+        }
+        .dark .glass-panel {
+            background: rgba(30, 32, 34, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .shimmer {
+            background: #f6f7f8;
+            background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+            background-repeat: no-repeat;
+            background-size: 800px 100%;
+            animation: placeholderShimmer 1.5s infinite linear;
+        }
+        @keyframes placeholderShimmer {
+            0% { background-position: -468px 0; }
+            100% { background-position: 468px 0; }
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e1e3e4;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c8c6c5;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-sans antialiased min-h-screen flex flex-col">
+    <!-- Top Navigation Bar -->
+    <header class="bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-xl sticky top-0 w-full border-b border-surface-container-high shadow-sm z-50">
+        <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-3xl">restaurant_menu</span>
+                    <span class="text-2xl font-bold text-primary">CraveAI</span>
+                </div>
+                <nav class="hidden md:flex gap-6">
+                    <a class="text-primary border-b-2 border-primary pb-1 font-semibold text-base" href="#">Discover</a>
+                    <a class="text-on-surface-variant hover:text-primary transition-colors text-base" href="#curation">Curation</a>
+                    <a class="text-on-surface-variant hover:text-primary transition-colors text-base" href="#results">Rankings</a>
+                </nav>
+            </div>
+            <div class="flex items-center gap-3">
+                <button id="theme-toggle" class="p-2 rounded-full text-on-surface-variant hover:text-primary hover:bg-surface-container transition-all" title="Toggle Theme">
+                    <span class="material-symbols-outlined text-2xl">light_mode</span>
+                </button>
+                <div class="flex items-center gap-2 pl-3 border-l border-surface-container-high">
+                    <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                        AI
+                    </div>
+                    <span class="hidden sm:inline text-sm font-semibold">Zomato AI Engine</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout Container -->
+    <div class="flex flex-1 max-w-7xl mx-auto w-full relative">
+        <!-- Curation Engine Sidebar -->
+        <aside id="curation" class="w-full md:w-80 bg-surface-container-low/80 backdrop-blur-lg border-r border-surface-container-high p-6 flex flex-col space-y-6 md:sticky md:top-[73px] md:h-[calc(100vh-73px)] overflow-y-auto z-40">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined">smart_toy</span>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-primary">Curation Engine</h2>
+                    <p class="text-xs text-on-surface-variant">Personalized AI Dining Selector</p>
+                </div>
+            </div>
+
+            <!-- Location Dropdown -->
+            <div class="space-y-2">
+                <label for="location-select" class="font-semibold text-sm text-on-surface flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-lg">location_on</span> Location (Locality)
+                </label>
+                <div class="relative">
+                    <select id="location-select" class="w-full rounded-lg border border-surface-container-highest bg-white px-3.5 py-2.5 text-sm font-medium text-on-surface shadow-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20">
+                        <option value="Indiranagar">Indiranagar</option>
+                        <option value="Koramangala 5th Block">Koramangala 5th Block</option>
+                        <option value="Whitefield">Whitefield</option>
+                        <option value="HSR">HSR Layout</option>
+                        <option value="Bellandur">Bellandur</option>
+                        <option value="BTM">BTM Layout</option>
+                        <option value="Jayanagar">Jayanagar</option>
+                        <option value="JP Nagar">JP Nagar</option>
+                        <option value="MG Road">MG Road</option>
+                        <option value="Bangalore">Bangalore (All)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Budget in Rupees (₹) -->
+            <div class="space-y-2">
+                <label class="font-semibold text-sm text-on-surface flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-lg">currency_rupee</span> Budget Range (in ₹)
+                </label>
+                <div id="budget-selector" class="grid grid-cols-3 gap-2">
+                    <button type="button" data-budget="low" class="budget-btn px-3 py-2 rounded-lg border border-surface-container-highest bg-white text-xs font-semibold text-on-surface hover:border-primary transition-all text-center">
+                        <div>₹ Low</div>
+                        <div class="text-[10px] text-on-surface-variant font-normal">≤ ₹500</div>
+                    </button>
+                    <button type="button" data-budget="medium" class="budget-btn px-3 py-2 rounded-lg border-2 border-primary bg-primary/5 text-xs font-bold text-primary transition-all text-center active-budget">
+                        <div>₹₹ Medium</div>
+                        <div class="text-[10px] font-medium">₹501–1500</div>
+                    </button>
+                    <button type="button" data-budget="high" class="budget-btn px-3 py-2 rounded-lg border border-surface-container-highest bg-white text-xs font-semibold text-on-surface hover:border-primary transition-all text-center">
+                        <div>₹₹₹ High</div>
+                        <div class="text-[10px] text-on-surface-variant font-normal">&gt; ₹1500</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cuisine Multi-Select Chips -->
+            <div class="space-y-2">
+                <label class="font-semibold text-sm text-on-surface flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-lg">restaurant</span> Cuisines
+                </label>
+                <div id="cuisine-chips" class="flex flex-wrap gap-2">
+                    <button type="button" data-cuisine="North Indian" class="cuisine-chip px-3 py-1.5 rounded-full bg-white border border-surface-container-highest text-xs font-medium text-on-surface hover:border-primary transition-all">North Indian</button>
+                    <button type="button" data-cuisine="Italian" class="cuisine-chip px-3 py-1.5 rounded-full bg-primary text-white text-xs font-semibold shadow-sm transition-all active-cuisine">Italian</button>
+                    <button type="button" data-cuisine="Chinese" class="cuisine-chip px-3 py-1.5 rounded-full bg-white border border-surface-container-highest text-xs font-medium text-on-surface hover:border-primary transition-all">Chinese</button>
+                    <button type="button" data-cuisine="Biryani" class="cuisine-chip px-3 py-1.5 rounded-full bg-white border border-surface-container-highest text-xs font-medium text-on-surface hover:border-primary transition-all">Biryani</button>
+                    <button type="button" data-cuisine="Pizza" class="cuisine-chip px-3 py-1.5 rounded-full bg-white border border-surface-container-highest text-xs font-medium text-on-surface hover:border-primary transition-all">Pizza</button>
+                    <button type="button" data-cuisine="Cafe" class="cuisine-chip px-3 py-1.5 rounded-full bg-white border border-surface-container-highest text-xs font-medium text-on-surface hover:border-primary transition-all">Cafe</button>
+                    <button type="button" data-cuisine="Continental" class="cuisine-chip px-3 py-1.5 rounded-full bg-white border border-surface-container-highest text-xs font-medium text-on-surface hover:border-primary transition-all">Continental</button>
+                </div>
+            </div>
+
+            <!-- Minimum Rating -->
+            <div class="space-y-2">
+                <label class="font-semibold text-sm text-on-surface flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-lg">star</span> Minimum Rating
+                </label>
+                <div id="rating-selector" class="grid grid-cols-4 gap-1.5">
+                    <button type="button" data-rating="0.0" class="rating-btn px-2.5 py-1.5 rounded-lg border border-surface-container-highest bg-white text-xs font-medium text-center">Any</button>
+                    <button type="button" data-rating="3.8" class="rating-btn px-2.5 py-1.5 rounded-lg border border-surface-container-highest bg-white text-xs font-medium text-center">3.8+ ★</button>
+                    <button type="button" data-rating="4.0" class="rating-btn px-2.5 py-1.5 rounded-lg border-2 border-primary bg-primary/5 text-primary text-xs font-bold text-center active-rating">4.0+ ★</button>
+                    <button type="button" data-rating="4.4" class="rating-btn px-2.5 py-1.5 rounded-lg border border-surface-container-highest bg-white text-xs font-medium text-center">4.4+ ★</button>
+                </div>
+            </div>
+
+            <!-- AI Prompt (Natural Language Preferences) -->
+            <div class="space-y-2 mt-auto pt-4 border-t border-surface-container-high">
+                <label for="ai-prompt" class="font-semibold text-sm text-primary flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">auto_awesome</span> Natural Language Preferences
+                </label>
+                <textarea id="ai-prompt" rows="3" class="w-full rounded-lg border border-surface-container-highest bg-white p-3 text-xs resize-none placeholder:text-on-surface-variant/60 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="e.g., Romantic rooftop seating with cozy ambiance and great pasta..."></textarea>
+                <button id="find-btn" type="button" class="w-full py-3.5 rounded-full bg-primary hover:bg-primary-container text-white text-sm font-bold shadow-md transition-all duration-300 flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-lg">auto_awesome</span>
+                    Find AI Recommendations
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Feed Area -->
+        <main id="results" class="flex-1 p-6 md:p-8 min-h-screen">
+            <!-- Results Header Banner -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 pb-4 border-b border-surface-container-high">
+                <div>
+                    <h1 id="results-title" class="text-3xl font-bold text-on-surface mb-1">AI Curated Recommendations</h1>
+                    <p id="results-subtitle" class="text-sm text-on-surface-variant flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-primary text-base">location_on</span>
+                        <span>Showing recommendations for <strong id="active-location-display">Indiranagar</strong></span>
+                    </p>
+                </div>
+                <div id="active-filters-tags" class="flex flex-wrap gap-2">
+                    <span class="glass-panel px-3 py-1 rounded-full text-xs font-semibold text-primary flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">currency_rupee</span> Medium (₹501–1500)
+                    </span>
+                    <span class="glass-panel px-3 py-1 rounded-full text-xs font-semibold text-primary flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">auto_awesome</span> AI Curated
+                    </span>
+                </div>
+            </div>
+
+            <!-- Loading Skeleton State (Hidden initially) -->
+            <div id="loading-state" class="hidden space-y-6">
+                <div class="p-6 rounded-xl bg-white border border-surface-container-high space-y-4">
+                    <div class="flex justify-between items-center">
+                        <div class="h-6 w-48 shimmer rounded"></div>
+                        <div class="h-6 w-20 shimmer rounded-full"></div>
+                    </div>
+                    <div class="h-4 w-72 shimmer rounded"></div>
+                    <div class="h-24 w-full shimmer rounded-lg"></div>
+                </div>
+                <div class="p-6 rounded-xl bg-white border border-surface-container-high space-y-4">
+                    <div class="flex justify-between items-center">
+                        <div class="h-6 w-40 shimmer rounded"></div>
+                        <div class="h-6 w-20 shimmer rounded-full"></div>
+                    </div>
+                    <div class="h-4 w-64 shimmer rounded"></div>
+                    <div class="h-24 w-full shimmer rounded-lg"></div>
+                </div>
+            </div>
+
+            <!-- Results Container -->
+            <div id="results-container" class="space-y-6">
+                <!-- Cards will be populated here by Javascript -->
+            </div>
+
+            <!-- Empty State (Hidden initially) -->
+            <div id="empty-state" class="hidden text-center py-16 px-4">
+                <div class="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-outlined text-3xl">search_off</span>
+                </div>
+                <h3 class="text-xl font-bold text-on-surface mb-2">No exact matches found</h3>
+                <p class="text-sm text-on-surface-variant max-w-md mx-auto mb-6">
+                    We couldn't find restaurants matching all your filter criteria. Try adjusting the location, cuisine, or rating filter.
+                </p>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

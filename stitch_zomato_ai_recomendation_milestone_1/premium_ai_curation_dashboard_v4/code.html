@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CraveAI - Curated Restaurant Recommendations</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#b7122a",
+                        "primary-fixed-dim": "#ffb3b1",
+                        "secondary-fixed": "#ffdada",
+                        "surface-container-highest": "#e1e3e4",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#fffbff",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "tertiary-fixed": "#e5e2e1",
+                        "surface-bright": "#f8f9fa",
+                        "surface-dim": "#d9dadb",
+                        "surface": "#f8f9fa",
+                        "secondary-container": "#ff8c94",
+                        "surface-container": "#edeeef",
+                        "on-surface": "#191c1d",
+                        "error-container": "#ffdad6",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#ffb3b6",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-tint": "#bb162c",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#92001c",
+                        "on-background": "#191c1d",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "tertiary-container": "#757474",
+                        "secondary": "#9d3f49",
+                        "outline": "#8f6f6e",
+                        "outline-variant": "#e4bebc",
+                        "primary-fixed": "#ffdad8",
+                        "on-secondary-fixed-variant": "#7e2833",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#2e3132",
+                        "on-surface-variant": "#5b403f",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-container-low": "#f3f4f5",
+                        "inverse-primary": "#ffb3b1",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9fa",
+                        "surface-variant": "#e1e3e4",
+                        "on-secondary-fixed": "#40000c",
+                        "error": "#ba1a1a",
+                        "primary-container": "#db313f",
+                        "on-primary-fixed": "#410007",
+                        "on-secondary-container": "#77232e",
+                        "on-tertiary-container": "#f7feff",
+                        "tertiary": "#5d5c5b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "32px",
+                        "container-max": "1280px",
+                        "stack-sm": "8px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "stack-md": "16px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Outfit"],
+                        "label-md": ["Outfit"],
+                        "headline-lg-mobile": ["Outfit"],
+                        "body-md": ["Outfit"],
+                        "display-lg": ["Outfit"],
+                        "title-md": ["Outfit"],
+                        "label-sm": ["Outfit"],
+                        "body-lg": ["Outfit"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 30px rgba(183, 18, 42, 0.04);
+        }
+        .shimmer {
+            background: #f6f7f8;
+            background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+            background-repeat: no-repeat;
+            background-size: 800px 100%; 
+            animation-duration: 1.5s;
+            animation-fill-mode: forwards; 
+            animation-iteration-count: infinite;
+            animation-name: placeholderShimmer;
+            animation-timing-function: linear;
+        }
+        @keyframes placeholderShimmer {
+            0% { background-position: -468px 0; }
+            100% { background-position: 468px 0; }
+        }
+        /* Custom Scrollbar for side nav */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e1e3e4;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c8c6c5;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl sticky top-0 w-full border-b border-white/20 dark:border-surface-variant/20 shadow-sm z-50">
+<div class="flex justify-between items-center px-margin-desktop py-stack-md max-w-container-max mx-auto">
+<div class="flex items-center gap-stack-lg">
+<div class="text-headline-lg font-headline-lg font-bold text-primary dark:text-primary-fixed-dim">CraveAI</div>
+<nav class="hidden md:flex gap-stack-lg">
+<a class="text-primary dark:text-primary-fixed-dim border-b-2 border-primary pb-1 font-outfit text-title-md font-title-md hover:text-primary transition-colors duration-200" href="#">Discover</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-outfit text-title-md font-title-md hover:text-primary transition-colors duration-200" href="#">Trending</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-outfit text-title-md font-title-md hover:text-primary transition-colors duration-200" href="#">Saved</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-outfit text-title-md font-title-md hover:text-primary transition-colors duration-200" href="#">History</a>
+</nav>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-200 scale-95 active:opacity-80 transition-all flex items-center justify-center p-2 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-200 scale-95 active:opacity-80 transition-all flex items-center justify-center p-2 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border-2 border-surface-container-lowest">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="A close-up, high-quality portrait of a young professional smiling slightly, shot in soft natural lighting against a neutral background. The style is modern, approachable, and crisp." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgVi27jNCitQsr6DNeNtEGe4xtU05erttHqHQOu59jCLOJGOzdYnSw2dFwhYH8C0V-bGp4DI2GDzEBezwMGsCq2WpqcErS-K9Fiu2P_w9nyJQaPS-kbKhylGTGSf4o8qqNuW8YTAMsdKLRtXR2RD3e54x3E-4dIB_J3JhV2MhusAn0_0Bj74nX4lQJl4CvnT5KuMfeuGcadVUeITuZ7xpqH9k3c4700UNa2LLFowGe8c4ippRD2RZs"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 max-w-container-max mx-auto w-full relative">
+<!-- SideNavBar (Filter / Curation Engine) -->
+<aside class="hidden md:flex flex-col w-72 bg-surface-container-low/60 dark:bg-surface-container-highest/20 backdrop-blur-lg border-r border-white/10 shadow-md p-stack-md space-y-stack-lg fixed left-0 top-[72px] h-[calc(100vh-72px)] overflow-y-auto z-40">
+<div class="flex items-center gap-stack-sm mb-stack-sm">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+<div>
+<h2 class="text-title-md font-title-md text-primary">Curation Engine</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Refine your taste</p>
+</div>
+</div>
+<!-- Location -->
+<div class="space-y-stack-sm">
+<h3 class="font-label-md text-label-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">location_on</span> Location
+                </h3>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-1.5 rounded-full bg-primary text-white font-label-sm text-label-sm shadow-sm transition-all">Indiranagar</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm hover:border-primary border border-transparent transition-all">Whitefield</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm hover:border-primary border border-transparent transition-all">Koramangala</button>
+</div>
+</div>
+<!-- Budget -->
+<div class="space-y-stack-sm">
+<h3 class="font-label-md text-label-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">payments</span> Budget
+                </h3>
+<div class="flex bg-surface-container rounded-full p-1 relative">
+<div class="absolute inset-y-1 left-1 w-1/3 bg-white rounded-full shadow-sm transition-all duration-300"></div>
+<button class="flex-1 py-1.5 text-center font-label-sm text-label-sm text-on-surface relative z-10">$</button>
+<button class="flex-1 py-1.5 text-center font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface relative z-10">$$</button>
+<button class="flex-1 py-1.5 text-center font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface relative z-10">$$$</button>
+</div>
+</div>
+<!-- Cuisine -->
+<div class="space-y-stack-sm">
+<h3 class="font-label-md text-label-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">restaurant</span> Cuisine
+                </h3>
+<div class="flex flex-wrap gap-2">
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm hover:border-primary border border-transparent transition-all">North Indian</button>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm hover:border-primary border border-primary text-primary transition-all">Italian</button>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm hover:border-primary border border-transparent transition-all">Asian</button>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm hover:border-primary border border-transparent transition-all">Continental</button>
+</div>
+</div>
+<!-- Ratings -->
+<div class="space-y-stack-sm">
+<h3 class="font-label-md text-label-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">star</span> Ratings
+                </h3>
+<div class="flex flex-wrap gap-2">
+<button class="px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm hover:border-primary border border-transparent transition-all">3.5+</button>
+<button class="px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm hover:border-primary border border-transparent transition-all">4.0+</button>
+<button class="px-3 py-1.5 rounded-full bg-primary text-white font-label-sm text-label-sm shadow-sm transition-all">4.5+</button>
+</div>
+</div>
+<!-- AI Prompt -->
+<div class="space-y-stack-sm mt-auto pt-stack-md border-t border-surface-variant">
+<h3 class="font-label-md text-label-md text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">auto_awesome</span> AI Prompt
+                </h3>
+<div class="relative">
+<textarea class="w-full h-24 rounded-lg border border-surface-variant bg-white/50 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary p-3 text-label-sm font-label-sm resize-none placeholder:text-on-surface-variant/50 transition-all shadow-sm" placeholder="e.g., Romantic rooftop seating with live jazz music..."></textarea>
+<div class="absolute bottom-2 right-2 flex gap-1">
+<button class="p-1.5 rounded-full hover:bg-surface-container-high text-on-surface-variant transition-colors"><span class="material-symbols-outlined text-[16px]">mic</span></button>
+</div>
+</div>
+<button class="w-full py-3 rounded-full bg-primary text-white font-label-md text-label-md font-bold shadow-md hover:bg-primary-container transition-colors duration-300 mt-stack-md">
+                    Find AI Recommendations
+                </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-72 p-stack-md md:p-gutter lg:p-margin-desktop min-h-screen">
+<!-- Results Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-stack-lg gap-4">
+<div>
+<h1 class="font-display-lg text-display-lg text-on-background mb-2">3 Matches for you</h1>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-2">
+                        in Indiranagar
+                        <span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
+</p>
+</div>
+<div class="flex gap-2">
+<span class="glass-panel px-3 py-1 rounded-full text-label-sm font-label-sm text-on-surface flex items-center gap-1">
+                        Italian <span class="material-symbols-outlined text-[14px] cursor-pointer hover:text-primary">close</span>
+</span>
+<span class="glass-panel px-3 py-1 rounded-full text-label-sm font-label-sm text-on-surface flex items-center gap-1">
+                        4.5+ <span class="material-symbols-outlined text-[14px] cursor-pointer hover:text-primary">close</span>
+</span>
+<span class="glass-panel px-3 py-1 rounded-full text-label-sm font-label-sm text-primary flex items-center gap-1 border-primary/20">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span> AI Curated
+                    </span>
+</div>
+</div>
+<!-- Top Ranked Card -->
+<div class="mb-stack-lg relative group">
+<div class="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+<div class="relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-surface-variant flex flex-col md:flex-row">
+<div class="relative md:w-2/5 h-64 md:h-auto overflow-hidden">
+<img alt="Skyline Terrace Pizza" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A beautifully plated authentic Italian wood-fired pizza with blistered crust, fresh basil, buffalo mozzarella, and a rich tomato base. The pizza is placed on a rustic wooden board in a dimly lit, atmospheric restaurant setting with warm ambient lighting." src="https://lh3.googleusercontent.com/aida/AP1WRLvMPbnJgTZJqQhc-7Sgc84uNysQPfHHItNHWFZ6n9s5KbNmObGA32utAPdhq57Nzl1q0JNM6yBx84A7VcYdXvtpKj3FpqPpG2QMhkzdrZfkl361k-LR-rep2Kg0GwPhvcvb0Y-pc5YFxVnBJNl1-im2yAy8eVYk8BA7ej_GNM9IvpGGfIkNPfbK113lsbB6NN_ylt7Mu6nOgchA3JWuuxlwX8jikJPL1N16MLSMDGWhrBxwoCNZwFi7NsU"/>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="bg-primary text-white font-label-md text-label-md px-3 py-1 rounded-full shadow-md flex items-center gap-1">
+                                #1 Match
+                            </span>
+</div>
+<div class="absolute top-4 right-4 glass-panel px-3 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md font-bold">4.8</span>
+</div>
+</div>
+<div class="p-stack-md md:p-gutter flex flex-col justify-between md:w-3/5">
+<div>
+<div class="flex justify-between items-start mb-2">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Skyline Terrace</h2>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">bookmark_border</span>
+</button>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Italian • Authentic Wood-fired • Rooftop</p>
+<div class="flex gap-4 mb-6">
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">payments</span>
+<span class="font-label-md text-label-md">₹2,800 for two</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="font-label-md text-label-md">1.2 km away</span>
+</div>
+</div>
+</div>
+<!-- AI Insight Banner -->
+<div class="glass-panel p-4 rounded-lg bg-surface-bright/50 border-l-4 border-l-primary relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-10">
+<span class="material-symbols-outlined text-[48px]">auto_awesome</span>
+</div>
+<h3 class="font-title-md text-title-md text-primary flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-[20px]">auto_awesome</span> AI Insight
+                            </h3>
+<p class="font-body-md text-body-md text-on-surface relative z-10">Perfectly aligns with your request for romantic rooftop seating and live jazz. Their authentic Neapolitan pizzas are highly rated by couples seeking a premium dining experience.</p>
+</div>
+<div class="mt-stack-md flex gap-4">
+<button class="flex-1 bg-primary text-white font-label-md text-label-md py-3 rounded-full hover:bg-primary-container transition-colors shadow-sm">Reserve Table</button>
+<button class="flex-1 bg-surface-container text-on-surface font-label-md text-label-md py-3 rounded-full hover:bg-surface-container-high transition-colors">View Menu</button>
+</div>
+</div>
+</div>
+</div>
+<h3 class="font-title-md text-title-md text-on-background mb-stack-md mt-stack-lg">More curated for you</h3>
+<!-- Secondary Results Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md mb-stack-lg">
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-surface-variant hover:shadow-md transition-shadow group">
+<div class="h-48 relative overflow-hidden">
+<img alt="Trattoria Bella" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A close-up of a steaming bowl of fresh, handmade Tagliatelle pasta with a rich Bolognese sauce, garnished with fresh basil and parmesan cheese. It sits on a rustic table with a glass of red wine in the soft focus background, bathed in warm, inviting natural light." src="https://lh3.googleusercontent.com/aida/AP1WRLu4fLKj0OPuirGXd-dVzBqscA12GDoFhXHoOZGcufEg0sqrzsMweNCJeP_C6s91WXd4FSKKA4sG8KhOXGlpWnTp-sJ5Kxrl8bmdnAnSIV5y9pIQeZ1DvjQO6juz7dfKntuIPEf0dQGxU3dBXAE8f8BKKhwojfzxNTYeDAKsRtwWjkQIJjc8ql57MlsxPwbZk5hiwevNWr9Vx5kjN3610l6cKDVYPyyKHcw_E0cdXaRc9RxowU6fJIZMRBk"/>
+<div class="absolute top-3 left-3 bg-surface-container-highest/90 backdrop-blur px-2 py-1 rounded-md flex items-center gap-1 shadow-sm">
+<span class="font-label-sm text-label-sm text-on-surface font-bold">#2</span>
+</div>
+<div class="absolute top-3 right-3 glass-panel px-2 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-sm text-label-sm font-bold">4.6</span>
+</div>
+</div>
+<div class="p-stack-md">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-title-md text-title-md text-on-surface">Trattoria Bella</h4>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">92% Match</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-3">Italian • Pasta Specialist • Cozy</p>
+<p class="font-label-sm text-label-sm text-on-surface line-clamp-2 mb-4 pl-3 border-l-2 border-primary/40 italic">"Intimate setting with incredible handmade pastas, though slightly more casual than a rooftop."</p>
+<div class="flex justify-between items-center mt-auto pt-3 border-t border-surface-variant">
+<span class="font-label-sm text-label-sm text-on-surface-variant">₹1,800 for two • 2.5 km</span>
+<button class="text-primary font-label-sm text-label-sm hover:underline">View Details</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-surface-variant hover:shadow-md transition-shadow group">
+<div class="h-48 relative overflow-hidden">
+<img alt="Luigi's Oven" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A top-down view of a gourmet artisanal pizza being sliced. The crust is thick and airy, topped with prosciutto, fresh arugula, shaved parmesan, and balsamic glaze. The setting is modern and sleek with a dark marble countertop." src="https://lh3.googleusercontent.com/aida/AP1WRLt7Ej7-CEyMevBchbTyy3WE9t56Y-GsHNrq3VjZVc3b2A4OIUw4AEB-6aSfFK9bn576PJH9o6CGrLBZAThJNgFBvj3p4vO7CMG_3CLanV5OsTYTX0Aa1UX2p-Lns7UT3_w6LE4GH_NSiH-x13MirYIiKBITLxlt83BDD_f9mchozHPn9oj33Ma_IvDvUE8XvPFIyo54zPO8pRxY5lfoCVL0aC3AvhJCt-qojPo1xUYm0lMdGhZwZ-COgQ"/>
+<div class="absolute top-3 left-3 bg-surface-container-highest/90 backdrop-blur px-2 py-1 rounded-md flex items-center gap-1 shadow-sm">
+<span class="font-label-sm text-label-sm text-on-surface font-bold">#3</span>
+</div>
+<div class="absolute top-3 right-3 glass-panel px-2 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-sm text-label-sm font-bold">4.5</span>
+</div>
+</div>
+<div class="p-stack-md">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-title-md text-title-md text-on-surface">Luigi's Oven</h4>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">88% Match</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-3">Italian • Modern • Lively</p>
+<p class="font-label-sm text-label-sm text-on-surface line-clamp-2 mb-4 pl-3 border-l-2 border-primary/40 italic">"Great ambiance and premium ingredients, but lacks the specific live jazz request."</p>
+<div class="flex justify-between items-center mt-auto pt-3 border-t border-surface-variant">
+<span class="font-label-sm text-label-sm text-on-surface-variant">₹2,200 for two • 3.1 km</span>
+<button class="text-primary font-label-sm text-label-sm hover:underline">View Details</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Loading Shimmers (More results) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md opacity-60">
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-surface-variant flex h-32">
+<div class="w-32 h-full shimmer"></div>
+<div class="p-4 flex-1 flex flex-col justify-between">
+<div>
+<div class="h-5 w-3/4 shimmer rounded mb-2"></div>
+<div class="h-3 w-1/2 shimmer rounded mb-3"></div>
+</div>
+<div class="h-16 w-full shimmer rounded opacity-50"></div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
