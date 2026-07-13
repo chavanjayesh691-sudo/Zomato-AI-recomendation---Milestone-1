@@ -203,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!res.ok) {
                 let errDetail = `API Error ${res.status}`;
                 if (res.status === 502) {
-                    errDetail = "API Error 502: Vercel rewrite proxy failed to reach Railway backend.";
+                    errDetail = "HTTP 502 Bad Gateway: Railway backend container is initializing or warming up.";
                 }
                 throw new Error(errDetail);
             }
@@ -331,11 +331,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${is502 ? `
                     <div class="mt-4 pt-4 border-t border-red-200 text-xs text-red-800 text-left space-y-2">
                         <p class="font-semibold">Why did this happen?</p>
-                        <p>Vercel's edge rewrite proxy is still pointing to the default placeholder <code class="bg-red-100 px-1 rounded">YOUR_RAILWAY_APP_URL</code> in <code class="font-mono">vercel.json</code>.</p>
-                        <div class="pt-2 flex justify-center">
-                            <button onclick="window.openBackendConfigModal && window.openBackendConfigModal()" class="px-4 py-2 rounded-xl bg-primary text-white font-bold hover:bg-primary-container transition-all shadow-sm flex items-center gap-1.5">
+                        <p>Your Railway container (` + "<code>web-production-016d9.up.railway.app</code>" + `) is warming up and downloading the ~149MB dataset on cold boot. Once loaded, requests complete in under 1 second.</p>
+                        <div class="pt-3 flex gap-2 justify-center">
+                            <button onclick="location.reload()" class="px-4 py-2 rounded-xl bg-primary text-white font-bold hover:bg-primary-container transition-all shadow-sm flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-base">refresh</span>
+                                Retry Now
+                            </button>
+                            <button onclick="window.openBackendConfigModal && window.openBackendConfigModal()" class="px-4 py-2 rounded-xl bg-surface-container text-on-surface font-semibold hover:bg-surface-container-high transition-all border border-surface-container-high flex items-center gap-1.5">
                                 <span class="material-symbols-outlined text-base">dns</span>
-                                Connect Your Railway Backend URL
+                                API Settings
                             </button>
                         </div>
                     </div>

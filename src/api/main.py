@@ -14,12 +14,17 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Initializing BackendService on startup...")
-    try:
-        service = get_backend_service()
-        logger.info("BackendService initialized successfully.")
-    except Exception as e:
-        logger.error(f"Error initializing BackendService: {e}")
+    logger.info("Starting non-blocking background thread to initialize BackendService...")
+    import threading
+
+    def _warmup():
+        try:
+            service = get_backend_service()
+            logger.info("BackendService initialized successfully in background thread.")
+        except Exception as e:
+            logger.error(f"Error initializing BackendService in background thread: {e}")
+
+    threading.Thread(target=_warmup, daemon=True).start()
     yield
     logger.info("Application shutting down...")
 
