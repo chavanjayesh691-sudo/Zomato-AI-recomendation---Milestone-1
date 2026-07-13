@@ -229,7 +229,7 @@ const res = await fetch(`${API_BASE_URL}/api/v1/recommend`, { ... });
 
 | Symptom | Probable Cause | Resolution |
 | :--- | :--- | :--- |
-| **Vercel Build Error: `Your application is being built using next build`** | Vercel defaulted to a Next.js framework preset or attempted to run `next build` on a static project. | Fixed by configuring `"framework": null` and `"buildCommand": "echo 'Static frontend ready'"` in `vercel.json` alongside `package.json`. |
+| **Vercel Build / Deploy Failure** | Vercel attempted to build Python backend files (`requirements.txt`) or schema validation failed. | Fixed by adding `.vercelignore` to exclude backend files (`requirements.txt`, `src/`, `*.parquet`), adding `frontend/vercel.json`, and using clean `vercel.json` schema (`version: 2`). |
 | **Railway Container Crash on Startup (`OOM` or Timeout)** | Downloading/preprocessing ~149 MB Hugging Face dataset exceeded initial memory/timeout during first boot. | Check Railway logs. Ensure service has at least 1GB RAM allocated. Subsequent restarts will be fast once cached. |
 | **Frontend shows `404 Not Found` on API requests (`/api/v1/metadata`)** | Vercel rewrite proxy (`vercel.json`) is missing or pointing to placeholder domain. | Verify `vercel.json` contains your live Railway domain (`https://...up.railway.app/api/:path*`) and redeploy Vercel. |
 | **CORS Error in Browser Console** | Making direct cross-origin calls without proxy and custom origins blocked. | Verify `CORSMiddleware` in `src/api/main.py` uses `allow_origins=["*"]` or use the `vercel.json` rewrite approach. |

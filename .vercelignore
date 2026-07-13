@@ -1,0 +1,12 @@
+# Ignore Python backend files so Vercel only deploys frontend static files
+requirements.txt
+src/
+config/
+tests/
+*.parquet
+generate_parquet.py
+run_prediction.py
+Procfile
+.venv/
+__pycache__/
+.pytest_cache/
