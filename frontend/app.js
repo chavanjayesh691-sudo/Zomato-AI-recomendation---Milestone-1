@@ -3,8 +3,50 @@
  */
 
 document.addEventListener("DOMContentLoaded", () => {
-    // API Base URL (defaults to "" for relative paths / Vercel proxying, or window.API_BASE_URL if configured)
-    const API_BASE_URL = window.API_BASE_URL || (window.CONFIG && window.CONFIG.API_BASE_URL) || "";
+    // Dynamic API Base URL (priority: localStorage -> window.API_BASE_URL -> default "" relative path)
+    function getApiBaseUrl() {
+        const saved = localStorage.getItem("CRAVEAI_API_BASE_URL");
+        if (saved !== null && saved.trim() !== "") {
+            return saved.trim().replace(/\/+$/, "");
+        }
+        return window.API_BASE_URL || (window.CONFIG && window.CONFIG.API_BASE_URL) || "";
+    }
+
+    // Backend API URL Modal Controls
+    const apiModal = document.getElementById("api-modal");
+    const apiUrlInput = document.getElementById("api-url-input");
+    const apiConfigBtn = document.getElementById("api-config-btn");
+    const closeApiModal = document.getElementById("close-api-modal");
+    const saveApiUrl = document.getElementById("save-api-url");
+    const resetApiUrl = document.getElementById("reset-api-url");
+
+    function openApiModal() {
+        if (apiUrlInput) apiUrlInput.value = getApiBaseUrl();
+        apiModal?.classList.remove("hidden");
+    }
+    function closeApiModalHandler() {
+        apiModal?.classList.add("hidden");
+    }
+
+    apiConfigBtn?.addEventListener("click", openApiModal);
+    closeApiModal?.addEventListener("click", closeApiModalHandler);
+
+    saveApiUrl?.addEventListener("click", () => {
+        const val = apiUrlInput?.value.trim() || "";
+        localStorage.setItem("CRAVEAI_API_BASE_URL", val);
+        closeApiModalHandler();
+        loadMetadata();
+    });
+
+    resetApiUrl?.addEventListener("click", () => {
+        localStorage.removeItem("CRAVEAI_API_BASE_URL");
+        if (apiUrlInput) apiUrlInput.value = "";
+        closeApiModalHandler();
+        loadMetadata();
+    });
+
+    // Make modal opener accessible globally for error banner action
+    window.openBackendConfigModal = openApiModal;
 
     // State
     const state = {
@@ -42,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Fetch Metadata on Load
     async function loadMetadata() {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/v1/metadata`);
+            const response = await fetch(`${getApiBaseUrl()}/api/v1/metadata`);
             if (response.ok) {
                 const data = await response.json();
                 if (data.available_locations && data.available_locations.length > 0) {
@@ -150,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         try {
-            const res = await fetch(`${API_BASE_URL}/api/v1/recommend`, {
+            const res = await fetch(`${getApiBaseUrl()}/api/v1/recommend`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
@@ -159,7 +201,11 @@ document.addEventListener("DOMContentLoaded", () => {
             loadingState.classList.add("hidden");
 
             if (!res.ok) {
-                throw new Error(`API Error ${res.status}`);
+                let errDetail = `API Error ${res.status}`;
+                if (res.status === 502) {
+                    errDetail = "API Error 502: Vercel rewrite proxy failed to reach Railway backend.";
+                }
+                throw new Error(errDetail);
             }
 
             const data = await res.json();
@@ -276,11 +322,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderErrorState(message) {
         resultsTitle.textContent = "Error loading recommendations";
+        const is502 = message.includes("502") || message.includes("Failed to fetch");
         resultsContainer.innerHTML = `
-            <div class="p-6 rounded-xl bg-red-50 border border-red-200 text-red-700 text-center">
+            <div class="p-6 rounded-xl bg-red-50 border border-red-200 text-red-700 text-center max-w-xl mx-auto shadow-sm">
                 <span class="material-symbols-outlined text-4xl mb-2">error</span>
                 <h3 class="font-bold text-lg">Unable to generate recommendations</h3>
                 <p class="text-sm mt-1">${escapeHtml(message)}</p>
+                ${is502 ? `
+                    <div class="mt-4 pt-4 border-t border-red-200 text-xs text-red-800 text-left space-y-2">
+                        <p class="font-semibold">Why did this happen?</p>
+                        <p>Vercel's edge rewrite proxy is still pointing to the default placeholder <code class="bg-red-100 px-1 rounded">YOUR_RAILWAY_APP_URL</code> in <code class="font-mono">vercel.json</code>.</p>
+                        <div class="pt-2 flex justify-center">
+                            <button onclick="window.openBackendConfigModal && window.openBackendConfigModal()" class="px-4 py-2 rounded-xl bg-primary text-white font-bold hover:bg-primary-container transition-all shadow-sm flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-base">dns</span>
+                                Connect Your Railway Backend URL
+                            </button>
+                        </div>
+                    </div>
+                ` : ""}
             </div>
         `;
     }
