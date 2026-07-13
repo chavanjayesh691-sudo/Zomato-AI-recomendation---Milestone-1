@@ -1,4 +1,6 @@
 {
+  "framework": null,
+  "buildCommand": "echo 'Static frontend ready'",
   "outputDirectory": "frontend",
   "rewrites": [
     {

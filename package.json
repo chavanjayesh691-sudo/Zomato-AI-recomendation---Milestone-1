@@ -1,0 +1,9 @@
+{
+  "name": "craveai-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static frontend web application for CraveAI / Zomato AI Restaurant Recommendation",
+  "scripts": {
+    "build": "echo \"Static HTML/JS frontend ready\""
+  }
+}
