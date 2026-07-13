@@ -12,41 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return window.API_BASE_URL || (window.CONFIG && window.CONFIG.API_BASE_URL) || "";
     }
 
-    // Backend API URL Modal Controls
-    const apiModal = document.getElementById("api-modal");
-    const apiUrlInput = document.getElementById("api-url-input");
-    const apiConfigBtn = document.getElementById("api-config-btn");
-    const closeApiModal = document.getElementById("close-api-modal");
-    const saveApiUrl = document.getElementById("save-api-url");
-    const resetApiUrl = document.getElementById("reset-api-url");
-
-    function openApiModal() {
-        if (apiUrlInput) apiUrlInput.value = getApiBaseUrl();
-        apiModal?.classList.remove("hidden");
-    }
-    function closeApiModalHandler() {
-        apiModal?.classList.add("hidden");
-    }
-
-    apiConfigBtn?.addEventListener("click", openApiModal);
-    closeApiModal?.addEventListener("click", closeApiModalHandler);
-
-    saveApiUrl?.addEventListener("click", () => {
-        const val = apiUrlInput?.value.trim() || "";
-        localStorage.setItem("CRAVEAI_API_BASE_URL", val);
-        closeApiModalHandler();
-        loadMetadata();
-    });
-
-    resetApiUrl?.addEventListener("click", () => {
-        localStorage.removeItem("CRAVEAI_API_BASE_URL");
-        if (apiUrlInput) apiUrlInput.value = "";
-        closeApiModalHandler();
-        loadMetadata();
-    });
-
-    // Make modal opener accessible globally for error banner action
-    window.openBackendConfigModal = openApiModal;
 
     // State
     const state = {
@@ -332,14 +297,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="mt-4 pt-4 border-t border-red-200 text-xs text-red-800 text-left space-y-2">
                         <p class="font-semibold">Why did this happen?</p>
                         <p>Your Railway container (` + "<code>web-production-016d9.up.railway.app</code>" + `) is warming up and downloading the ~149MB dataset on cold boot. Once loaded, requests complete in under 1 second.</p>
-                        <div class="pt-3 flex gap-2 justify-center">
-                            <button onclick="location.reload()" class="px-4 py-2 rounded-xl bg-primary text-white font-bold hover:bg-primary-container transition-all shadow-sm flex items-center gap-1.5">
+                        <div class="pt-3 flex justify-center">
+                            <button onclick="location.reload()" class="px-5 py-2 rounded-xl bg-primary text-white font-bold hover:bg-primary-container transition-all shadow-sm flex items-center gap-1.5">
                                 <span class="material-symbols-outlined text-base">refresh</span>
                                 Retry Now
-                            </button>
-                            <button onclick="window.openBackendConfigModal && window.openBackendConfigModal()" class="px-4 py-2 rounded-xl bg-surface-container text-on-surface font-semibold hover:bg-surface-container-high transition-all border border-surface-container-high flex items-center gap-1.5">
-                                <span class="material-symbols-outlined text-base">dns</span>
-                                API Settings
                             </button>
                         </div>
                     </div>
