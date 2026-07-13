@@ -3,6 +3,9 @@
  */
 
 document.addEventListener("DOMContentLoaded", () => {
+    // API Base URL (defaults to "" for relative paths / Vercel proxying, or window.API_BASE_URL if configured)
+    const API_BASE_URL = window.API_BASE_URL || (window.CONFIG && window.CONFIG.API_BASE_URL) || "";
+
     // State
     const state = {
         location: "Indiranagar",
@@ -39,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Fetch Metadata on Load
     async function loadMetadata() {
         try {
-            const response = await fetch("/api/v1/metadata");
+            const response = await fetch(`${API_BASE_URL}/api/v1/metadata`);
             if (response.ok) {
                 const data = await response.json();
                 if (data.available_locations && data.available_locations.length > 0) {
@@ -147,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         try {
-            const res = await fetch("/api/v1/recommend", {
+            const res = await fetch(`${API_BASE_URL}/api/v1/recommend`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
