@@ -4,15 +4,15 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://YOUR_RAILWAY_APP_URL/api/:path*"
+      "destination": "https://web-production-016d9.up.railway.app/api/:path*"
     },
     {
       "source": "/docs",
-      "destination": "https://YOUR_RAILWAY_APP_URL/docs"
+      "destination": "https://web-production-016d9.up.railway.app/docs"
     },
     {
       "source": "/openapi.json",
-      "destination": "https://YOUR_RAILWAY_APP_URL/openapi.json"
+      "destination": "https://web-production-016d9.up.railway.app/openapi.json"
     }
   ]
 }
