@@ -9,7 +9,8 @@ from src.models.api_schemas import (
     ErrorResponse,
 )
 from src.models.recommendation import RecommendationResponse
-from src.services.backend_service import BackendService, get_backend_service
+from typing import Optional
+from src.services.backend_service import BackendService, get_backend_service, get_backend_service_if_ready
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +68,14 @@ def get_metadata(
     include_in_schema=False,
 )
 def health_check(
-    service: BackendService = Depends(get_backend_service),
+    service: Optional[BackendService] = Depends(get_backend_service_if_ready),
 ) -> HealthResponse:
+    if service is None:
+        from config.settings import GROQ_API_KEY
+        return HealthResponse(
+            status="initializing",
+            dataset_loaded=False,
+            total_records=0,
+            llm_configured=bool(GROQ_API_KEY and len(GROQ_API_KEY.strip()) > 0),
+        )
     return service.health_check()

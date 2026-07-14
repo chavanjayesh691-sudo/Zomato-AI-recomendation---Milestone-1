@@ -157,6 +157,11 @@ def get_backend_service() -> BackendService:
     return _backend_service_singleton
 
 
+def get_backend_service_if_ready() -> Optional[BackendService]:
+    """Non-blocking accessor to check current singleton status."""
+    return _backend_service_singleton
+
+
 def reset_backend_service_singleton():
     """Reset singleton instance (useful for unit tests)."""
     global _backend_service_singleton

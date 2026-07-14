@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 from src.api.main import app
 from src.data.preprocessor import preprocess_dataframe
 from src.data.repository import RestaurantRepository
-from src.services.backend_service import BackendService, get_backend_service
+from src.services.backend_service import BackendService, get_backend_service, get_backend_service_if_ready
 from src.services.filter_service import FilterService
 from src.services.llm_engine import LlmEngine
 from src.services.orchestrator import RecommendationOrchestrator
@@ -46,6 +46,7 @@ def override_backend_service():
 
 
 app.dependency_overrides[get_backend_service] = override_backend_service
+app.dependency_overrides[get_backend_service_if_ready] = override_backend_service
 client = TestClient(app)
 
 
