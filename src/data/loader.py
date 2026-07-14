@@ -36,19 +36,19 @@ def load_or_cache_dataset(
     dataset_name: str = "ManikaSaini/zomato-restaurant-recommendation",
     split: Optional[str] = "train",
     preprocess: bool = True,
+    force_rebuild: bool = False,
 ) -> pd.DataFrame:
     """Load the dataset from a Parquet cache if available; otherwise load from Hugging Face, preprocess, and cache it."""
     cache_file = Path(cache_path)
-    if cache_file.exists():
+    if cache_file.exists() and not force_rebuild:
         try:
             df = pd.read_parquet(cache_file)
-            if preprocess and ("rating" not in df.columns or "cost_for_two" not in df.columns):
+            if preprocess and ("rating" not in df.columns or "cost_for_two" not in df.columns or len(df.columns) > 10):
                 df = preprocess_dataframe(df)
                 save_to_parquet(df, cache_file)
             return df
         except Exception:
             pass
-
 
     df = load_zomato_dataset(dataset_name=dataset_name, split=split)
     if df.empty:

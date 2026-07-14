@@ -68,6 +68,8 @@ class RecommendationOrchestrator:
                     )
                 )
         except Exception as e:
+            import logging
+            logging.getLogger(__name__).warning(f"Groq LLM ranking failed: {e}. Falling back to deterministic ranking.")
             response.fallback_used = True
             recommendations = fallback_rank(candidates)
             response.summary = f"Recommendations generated from rule-based fallback ranking (LLM info: {e})."

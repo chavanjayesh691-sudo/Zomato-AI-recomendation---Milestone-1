@@ -11,10 +11,8 @@ def main() -> None:
     
     # Generate and cache restaraunt.parquet
     df = load_or_cache_dataset(cache_path="restaraunt.parquet", preprocess=True)
-    
-    # Also save a copy with standard spelling just in case
-    if not Path("restaurant.parquet").exists():
-        df.to_parquet("restaurant.parquet", index=False)
+    df.to_parquet("restaraunt.parquet", index=False)
+    df.to_parquet("restaurant.parquet", index=False)
         
     elapsed = round(time.time() - start_time, 2)
     print(f"Successfully generated restaraunt.parquet ({len(df)} records) in {elapsed}s!")

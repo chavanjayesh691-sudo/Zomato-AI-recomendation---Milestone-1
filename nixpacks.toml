@@ -1,0 +1,2 @@
+[phases.build]
+cmds = ["python generate_parquet.py"]

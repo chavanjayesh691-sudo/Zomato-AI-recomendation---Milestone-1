@@ -17,12 +17,23 @@ class LlmEngine:
         self.client = self._load_client()
 
     def _load_client(self) -> Any | None:
+        if not self.api_key or not self.api_key.strip():
+            return None
         try:
             groq = importlib.import_module("groq")
-            return groq.Groq(api_key=self.api_key)
+            return groq.Groq(api_key=self.api_key.strip())
         except Exception as e:
             logger.error(f"Failed to initialize Groq client: {e}")
             return None
+
+    def _ensure_client(self) -> bool:
+        if self.client is not None:
+            return True
+        latest_key = os.getenv("GROQ_API_KEY", self.api_key or GROQ_API_KEY)
+        if latest_key and latest_key.strip():
+            self.api_key = latest_key.strip()
+            self.client = self._load_client()
+        return self.client is not None
 
     def parse_response(self, raw_content: str) -> dict[str, Any]:
         if not raw_content:
@@ -45,7 +56,7 @@ class LlmEngine:
             raise ValueError(f"Invalid JSON returned from LLM: {raw_content}") from err
 
     def rank(self, prompt: str) -> dict[str, Any]:
-        if self.client is None:
+        if not self._ensure_client() or self.client is None:
             raise RuntimeError("Groq SDK client is not available or API key is missing")
 
         logger.info(f"Dispatching prompt to Groq API (model: {self.model})...")
@@ -56,7 +67,8 @@ class LlmEngine:
         }
         try:
             response = self.client.chat.completions.create(**kwargs, response_format={"type": "json_object"})
-        except Exception:
+        except Exception as err:
+            logger.warning(f"Groq API call with response_format failed ({err}), retrying without response_format...")
             response = self.client.chat.completions.create(**kwargs)
         raw_content = response.choices[0].message.content or ""
         logger.info("Successfully received response from Groq API.")

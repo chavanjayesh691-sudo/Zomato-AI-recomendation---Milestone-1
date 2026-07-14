@@ -114,7 +114,14 @@ def preprocess_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     if "id" not in df.columns:
         df["id"] = df.index.astype(str)
 
-    # Drop rows without a name or rating
+    # Drop rows without a name
     df = df[df["name"].str.strip() != ""]
+
+    # Keep only compact columns needed for filtering & recommendations
+    keep_cols = ["id", "name", "location", "cuisines", "rating", "cost_for_two", "votes"]
+    if "listed_in(city)" in df.columns:
+        keep_cols.append("listed_in(city)")
+    existing_cols = [c for c in keep_cols if c in df.columns]
+    df = df[existing_cols]
 
     return df

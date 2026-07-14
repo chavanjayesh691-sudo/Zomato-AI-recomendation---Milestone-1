@@ -141,18 +141,24 @@ class BackendService:
         )
 
 
+import threading
+
 _backend_service_singleton: Optional[BackendService] = None
+_backend_service_lock = threading.Lock()
 
 
 def get_backend_service() -> BackendService:
     """Singleton accessor for FastAPI dependency injection."""
     global _backend_service_singleton
     if _backend_service_singleton is None:
-        _backend_service_singleton = BackendService()
+        with _backend_service_lock:
+            if _backend_service_singleton is None:
+                _backend_service_singleton = BackendService()
     return _backend_service_singleton
 
 
 def reset_backend_service_singleton():
     """Reset singleton instance (useful for unit tests)."""
     global _backend_service_singleton
-    _backend_service_singleton = None
+    with _backend_service_lock:
+        _backend_service_singleton = None
